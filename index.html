@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For LJZ ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <canvas id="particles"></canvas>
+    
+    <div id="intro" class="section active">
+        <div class="heart-container">
+            <div class="heart"></div>
+        </div>
+        <h1 class="intro-text">For My Dearest LJZ</h1>
+        <p class="intro-subtitle">点亮属于你的星空 ✨</p>
+    </div>
+
+    <div id="gallery" class="section">
+        <h2 class="section-title">我们的独家记忆</h2>
+        <div class="photo-grid" id="photoGrid"></div>
+        <button class="next-btn" id="toHeartBtn">汇聚成爱 ❤️</button>
+    </div>
+
+    <div id="heart-wall" class="section">
+        <div class="heart-photo-container" id="heartContainer">
+            <div class="heart-title">满满都是幸福 ❤️</div>
+        </div>
+        <button class="next-btn" id="toCardBtn">查收金阳的爱 💌</button>
+    </div>
+
+    <div id="card" class="section">
+        <div class="birthday-card" id="letter-content">
+            <div class="wax-seal">Love</div>
+            
+            <div class="card-header">
+                <h1 class="card-title">Happy Birthday</h1>
+                <p class="card-date">To: LJZ 🎂</p>
+            </div>
+            <div class="card-body">
+                <p><strong>Ljz ljz ljz 啊：</strong></p>
+                <p>生日快乐啊，咱俩重识也有一年了，时间过的真快嘿嘿，上次自从 Muskoka 玩完后也没见过了，这个批评哈，有了新朋友就忘了旧朋友。不过嘿嘿一切都是缘分，没想到还有一天在这碰见，还成为了情侣，缘分太奇妙了，我俩估计都做梦没想到能这样。</p>
+                
+                <p>现在的 ljz 可厉害多了，又能开车(快车哈)，还能煮菜，但是调酒的技能还得让我再体验下，看看是不是进步了。但是还是跟小朋友一样可爱，像小兔子一样吃菜，不开心的时候小嘴一瞥，沙发上小毯子一裹看电视。</p>
+                
+                <p>跟 ljz 的每一天真的很开心啦，以前一周见两天，现在天天都想见，一天不抱抱你就难受。跟你一起睡觉都很香，醒来在身边能看到你就是个很幸福的事情。</p>
+                
+                <p>我准备照片的时候才发现我们竟然去了那么多地方，我们看了枫叶，去了好多公园，一起吃了好多好吃的，一起做饭，竟然还一起去了 Punta Cana，哈哈哈这个我的 bro 跟我安利了很多回，但是跟你一起去真的好开心啊，真的像度蜜月一样。酒跟你一起喝更甜，沙滩也更软，牛排也更香了，我们以后还要去好多地方，想去的地方我们都会能去到的。下次没准该冰岛了吧。</p>
+                
+                <p>我们吵吵闹闹，每次还让你委屈，希望每次能给你哄好，看你伤心我真的很难过。但是啦我看你委屈的时候，生气的时候，我还是觉得你很可爱，再怎么气人也还是可爱的。</p>
+                
+                <p>嘿嘿我当然希望老婆能跟你一起回国玩啦，日本带你去银座，浅草寺，涉谷，池袋，还有富士山，嘿嘿国内我带你去北京吃遍五道口一条街，带你去王府井买糖葫芦，后海小酒吧喝点小酒，去天津吃狗不理，看老大爷跳水。</p>
+                
+                <p>日子当然跟谁过都不一样啦，吵吵闹闹也幸福，开开心心玩也幸福。</p>
+                
+                <div class="signature">
+                    <p>亲爱的 LJZ，我最喜欢的宝贝</p>
+                    <p class="big-sign">生日快乐 ❤️</p>
+                    <p class="from">—— 爱你的 张金阳</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="btn-group">
+            <button class="save-btn" id="saveBtn">📥 保存爱心到手机</button>
+            <button class="replay-btn" id="replayBtn">再看一次 ↺</button>
+        </div>
+    </div>
+
+    <div id="lightbox">
+        <button class="close-btn">×</button>
+        <div class="lightbox-content">
+            <img id="lightboxImg" src="" alt="">
+            <div id="imageCounter"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
