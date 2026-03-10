@@ -7,8 +7,8 @@ for (let i = 1; i <= TOTAL_PHOTOS; i++) {
     photoFiles.push(`1 (${i}).jpg`);
 }
 
-// --- 🌸 樱花粒子系统 ---
-class SakuraSystem {
+// --- 🌸 浪漫粒子系统 (樱花 + 爱心 + 星星) ---
+class RomanticParticleSystem {
     constructor() {
         this.canvas = document.getElementById('particles');
         this.ctx = this.canvas.getContext('2d');
@@ -25,21 +25,57 @@ class SakuraSystem {
     }
 
     init() {
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 35; i++) {
             this.particles.push(this.createPetal());
+        }
+        for (let i = 0; i < 15; i++) {
+            this.particles.push(this.createHeart());
+        }
+        for (let i = 0; i < 20; i++) {
+            this.particles.push(this.createSparkle());
         }
     }
 
     createPetal() {
         return {
+            type: 'petal',
             x: Math.random() * this.canvas.width,
             y: Math.random() * this.canvas.height - this.canvas.height,
-            size: Math.random() * 10 + 5,
-            speedX: Math.random() * 2 - 1,
-            speedY: Math.random() * 1.5 + 0.5,
+            size: Math.random() * 8 + 4,
+            speedX: Math.random() * 1.5 - 0.75,
+            speedY: Math.random() * 1.2 + 0.4,
+            rotation: Math.random() * 360,
+            rotationSpeed: Math.random() * 1.5 - 0.75,
+            opacity: Math.random() * 0.35 + 0.15
+        };
+    }
+
+    createHeart() {
+        return {
+            type: 'heart',
+            x: Math.random() * this.canvas.width,
+            y: Math.random() * this.canvas.height - this.canvas.height,
+            size: Math.random() * 6 + 4,
+            speedX: Math.random() * 1 - 0.5,
+            speedY: Math.random() * 1 + 0.3,
             rotation: Math.random() * 360,
             rotationSpeed: Math.random() * 2 - 1,
             opacity: Math.random() * 0.4 + 0.2
+        };
+    }
+
+    createSparkle() {
+        return {
+            type: 'sparkle',
+            x: Math.random() * this.canvas.width,
+            y: Math.random() * this.canvas.height - this.canvas.height,
+            size: Math.random() * 4 + 2,
+            speedX: Math.random() * 0.8 - 0.4,
+            speedY: Math.random() * 1.5 + 0.5,
+            rotation: 0,
+            rotationSpeed: Math.random() * 3,
+            opacity: Math.random() * 0.5 + 0.3,
+            twinkle: Math.random() * Math.PI * 2
         };
     }
 
@@ -55,10 +91,55 @@ class SakuraSystem {
         this.ctx.bezierCurveTo(-p.size, p.size/2, -p.size, -p.size/2, 0, 0);
         
         const gradient = this.ctx.createLinearGradient(-p.size, -p.size, p.size, p.size);
-        gradient.addColorStop(0, '#ff9a9e');
-        gradient.addColorStop(1, '#fecfef');
+        gradient.addColorStop(0, '#e8b4b8');
+        gradient.addColorStop(1, '#f5e6e8');
         this.ctx.fillStyle = gradient;
         this.ctx.fill();
+        
+        this.ctx.restore();
+    }
+
+    drawHeart(p) {
+        this.ctx.save();
+        this.ctx.translate(p.x, p.y);
+        this.ctx.rotate(p.rotation * Math.PI / 180);
+        this.ctx.globalAlpha = p.opacity;
+        
+        const s = p.size;
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, -s * 0.3);
+        this.ctx.bezierCurveTo(-s, -s * 0.3, -s, s * 0.5, 0, s * 0.9);
+        this.ctx.bezierCurveTo(s, s * 0.5, s, -s * 0.3, 0, -s * 0.3);
+        
+        const gradient = this.ctx.createLinearGradient(-s, -s, s, s);
+        gradient.addColorStop(0, '#e8b4b8');
+        gradient.addColorStop(1, '#d4a5a9');
+        this.ctx.fillStyle = gradient;
+        this.ctx.fill();
+        
+        this.ctx.restore();
+    }
+
+    drawSparkle(p) {
+        const twinkle = Math.sin(p.twinkle) * 0.3 + 0.7;
+        this.ctx.save();
+        this.ctx.translate(p.x, p.y);
+        this.ctx.rotate(p.rotation * Math.PI / 180);
+        this.ctx.globalAlpha = p.opacity * twinkle;
+        
+        const s = p.size;
+        this.ctx.strokeStyle = 'rgba(232, 180, 184, 0.9)';
+        this.ctx.lineWidth = 1;
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, -s);
+        this.ctx.lineTo(0, s);
+        this.ctx.moveTo(-s, 0);
+        this.ctx.lineTo(s, 0);
+        this.ctx.moveTo(-s * 0.7, -s * 0.7);
+        this.ctx.lineTo(s * 0.7, s * 0.7);
+        this.ctx.moveTo(-s * 0.7, s * 0.7);
+        this.ctx.lineTo(s * 0.7, -s * 0.7);
+        this.ctx.stroke();
         
         this.ctx.restore();
     }
@@ -66,11 +147,16 @@ class SakuraSystem {
     animate() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.particles.forEach(p => {
-            this.drawPetal(p);
+            if (p.type === 'petal') this.drawPetal(p);
+            else if (p.type === 'heart') this.drawHeart(p);
+            else if (p.type === 'sparkle') this.drawSparkle(p);
+            
             p.x += p.speedX;
             p.y += p.speedY;
             p.rotation += p.rotationSpeed;
-            if (p.y > this.canvas.height) {
+            if (p.twinkle !== undefined) p.twinkle += 0.08;
+            
+            if (p.y > this.canvas.height + 20) {
                 p.y = -20;
                 p.x = Math.random() * this.canvas.width;
             }
@@ -104,7 +190,6 @@ function initGallery() {
         const photoItem = document.createElement('div');
         photoItem.className = 'photo-item';
         
-        // ✨ 核心修改：使用 index * 0.08 实现瀑布流顺滑出现
         photoItem.style.animationDelay = `${index * 0.08}s`;
         
         const img = document.createElement('img');
@@ -155,7 +240,6 @@ function initHeartWall() {
     photoFiles.forEach((file, index) => {
         const div = document.createElement('div');
         div.className = 'heart-photo';
-        // 初始随机位置
         div.style.left = Math.random() * window.innerWidth + 'px';
         div.style.top = Math.random() * window.innerHeight + 'px';
         div.style.opacity = 0;
@@ -167,7 +251,6 @@ function initHeartWall() {
         div.onclick = () => openLightbox(index);
         container.appendChild(div);
         
-        // 飞入动画
         setTimeout(() => {
             div.style.left = (positions[index].x - div.offsetWidth/2) + 'px';
             div.style.top = (positions[index].y - div.offsetHeight/2) + 'px';
@@ -187,7 +270,7 @@ function openLightbox(index) {
     lightbox.classList.add('active');
 }
 
-// --- 📥 下载贺卡功能 (带背景修复) ---
+// --- 📥 下载贺卡功能 ---
 function downloadCard() {
     const btn = document.getElementById('saveBtn');
     const originalText = btn.innerText;
@@ -196,14 +279,13 @@ function downloadCard() {
     const cardElement = document.getElementById('letter-content');
     
     html2canvas(cardElement, {
-        backgroundColor: '#fff0f5', // 强制粉色背景
+        backgroundColor: '#fffaf9',
         scale: 2, 
         useCORS: true,
         onclone: (clonedDoc) => {
             const clonedCard = clonedDoc.getElementById('letter-content');
-            clonedCard.style.border = '10px solid #ffbad0';
+            clonedCard.style.border = 'none';
             clonedCard.style.boxShadow = 'none';
-            clonedCard.style.fontSize = '1.1rem';
         }
     }).then(canvas => {
         const link = document.createElement('a');
@@ -223,7 +305,7 @@ function downloadCard() {
 
 // --- 启动 ---
 document.addEventListener('DOMContentLoaded', () => {
-    new SakuraSystem();
+    new RomanticParticleSystem();
     
     document.querySelector('.heart-container').addEventListener('click', () => {
         initGallery();
