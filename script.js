@@ -2,7 +2,7 @@ const TOTAL_PHOTOS = 85;
 const photoFiles = Array.from({ length: TOTAL_PHOTOS }, (_, index) => `1 (${index + 1}).jpg`);
 const featuredLabels = ["opening shot", "golden hour", "little trip", "soft smile", "final frame"];
 const state = {
-    photos: [],
+    photos: [...photoFiles],
     currentSection: "intro",
     lightboxIndex: 0,
     galleryReady: false
@@ -120,34 +120,6 @@ function switchSection(nextId) {
     next.classList.add("active");
     state.currentSection = nextId;
     window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function loadPhoto(file) {
-    return new Promise((resolve) => {
-        const img = new Image();
-        const timeout = window.setTimeout(() => resolve(null), 5000);
-
-        img.onload = () => {
-            window.clearTimeout(timeout);
-            resolve(file);
-        };
-
-        img.onerror = () => {
-            window.clearTimeout(timeout);
-            resolve(null);
-        };
-
-        img.src = `images/${file}`;
-    });
-}
-
-async function resolvePhotos() {
-    const results = await Promise.all(photoFiles.map(loadPhoto));
-    state.photos = results.filter(Boolean);
-    const counter = document.getElementById("photoCount");
-    if (counter) {
-        counter.textContent = String(state.photos.length || TOTAL_PHOTOS);
-    }
 }
 
 function createFeaturedCard(file, photoIndex, slotIndex) {
@@ -309,6 +281,10 @@ function downloadCard() {
 
 async function init() {
     new AmbientParticleSystem();
+    const counter = document.getElementById("photoCount");
+    if (counter) {
+        counter.textContent = String(TOTAL_PHOTOS);
+    }
 
     document.getElementById("startBtn").addEventListener("click", () => {
         renderGallery();
@@ -345,11 +321,6 @@ async function init() {
         if (event.key === "Escape") closeLightbox();
         if (event.key === "ArrowLeft") stepLightbox(-1);
         if (event.key === "ArrowRight") stepLightbox(1);
-    });
-
-    resolvePhotos().catch(() => {
-        const counter = document.getElementById("photoCount");
-        if (counter) counter.textContent = String(TOTAL_PHOTOS);
     });
 }
 
