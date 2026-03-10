@@ -163,6 +163,7 @@ img {
     inset: 14px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 18px;
+    pointer-events: none;
 }
 
 .hero-card::after {
@@ -172,6 +173,7 @@ img {
     height: 180px;
     background: radial-gradient(circle, rgba(214, 179, 109, 0.18), transparent 68%);
     filter: blur(24px);
+    pointer-events: none;
 }
 
 .hero-kicker,
@@ -507,6 +509,11 @@ img {
     padding: 0 26px;
     border-radius: 999px;
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+.hero-card .primary-btn {
+    position: relative;
+    z-index: 1;
 }
 
 .primary-btn:hover,
