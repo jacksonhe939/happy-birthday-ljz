@@ -1,338 +1,343 @@
-// --- 配置区 ---
-const TOTAL_PHOTOS = 85; 
+﻿const TOTAL_PHOTOS = 85;
+const photoFiles = Array.from({ length: TOTAL_PHOTOS }, (_, index) => `1 (${index + 1}).jpg`);
+const featuredLabels = ["first glance", "late sunset", "little trip", "soft smile", "our day"];
+const state = {
+    photos: [],
+    currentSection: "intro",
+    lightboxIndex: 0,
+    galleryReady: false
+};
 
-// 自动生成文件名数组 (匹配你截图里的 "1 (x).jpg")
-const photoFiles = [];
-for (let i = 1; i <= TOTAL_PHOTOS; i++) {
-    photoFiles.push(`1 (${i}).jpg`);
-}
-
-// --- 🌸 浪漫粒子系统 (樱花 + 爱心 + 星星) ---
-class RomanticParticleSystem {
+class AmbientParticleSystem {
     constructor() {
-        this.canvas = document.getElementById('particles');
-        this.ctx = this.canvas.getContext('2d');
-        this.particles = [];
+        this.canvas = document.getElementById("particles");
+        this.ctx = this.canvas.getContext("2d");
+        this.items = [];
+        this.handleResize = this.resize.bind(this);
+        window.addEventListener("resize", this.handleResize);
         this.resize();
-        window.addEventListener('resize', () => this.resize());
-        this.init();
-        this.animate();
+        this.seed();
+        this.frame();
     }
 
     resize() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.canvas.width = this.width * dpr;
+        this.canvas.height = this.height * dpr;
+        this.canvas.style.width = `${this.width}px`;
+        this.canvas.style.height = `${this.height}px`;
+        this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    init() {
-        for (let i = 0; i < 35; i++) {
-            this.particles.push(this.createPetal());
-        }
-        for (let i = 0; i < 15; i++) {
-            this.particles.push(this.createHeart());
-        }
-        for (let i = 0; i < 20; i++) {
-            this.particles.push(this.createSparkle());
-        }
+    seed() {
+        this.items = Array.from({ length: 22 }, () => this.createItem(true));
     }
 
-    createPetal() {
+    createItem(initial = false) {
+        const types = ["petal", "spark"];
+        const type = types[Math.floor(Math.random() * types.length)];
         return {
-            type: 'petal',
-            x: Math.random() * this.canvas.width,
-            y: Math.random() * this.canvas.height - this.canvas.height,
-            size: Math.random() * 8 + 4,
-            speedX: Math.random() * 1.5 - 0.75,
-            speedY: Math.random() * 1.2 + 0.4,
-            rotation: Math.random() * 360,
-            rotationSpeed: Math.random() * 1.5 - 0.75,
-            opacity: Math.random() * 0.35 + 0.15
+            type,
+            x: Math.random() * this.width,
+            y: initial ? Math.random() * this.height : -20,
+            size: type === "petal" ? 6 + Math.random() * 10 : 1.5 + Math.random() * 2.5,
+            speedX: (Math.random() - 0.5) * 0.45,
+            speedY: 0.2 + Math.random() * 0.55,
+            rotation: Math.random() * Math.PI * 2,
+            rotationSpeed: (Math.random() - 0.5) * 0.015,
+            opacity: type === "petal" ? 0.18 + Math.random() * 0.2 : 0.25 + Math.random() * 0.35,
+            drift: Math.random() * Math.PI * 2
         };
     }
 
-    createHeart() {
-        return {
-            type: 'heart',
-            x: Math.random() * this.canvas.width,
-            y: Math.random() * this.canvas.height - this.canvas.height,
-            size: Math.random() * 6 + 4,
-            speedX: Math.random() * 1 - 0.5,
-            speedY: Math.random() * 1 + 0.3,
-            rotation: Math.random() * 360,
-            rotationSpeed: Math.random() * 2 - 1,
-            opacity: Math.random() * 0.4 + 0.2
-        };
-    }
-
-    createSparkle() {
-        return {
-            type: 'sparkle',
-            x: Math.random() * this.canvas.width,
-            y: Math.random() * this.canvas.height - this.canvas.height,
-            size: Math.random() * 4 + 2,
-            speedX: Math.random() * 0.8 - 0.4,
-            speedY: Math.random() * 1.5 + 0.5,
-            rotation: 0,
-            rotationSpeed: Math.random() * 3,
-            opacity: Math.random() * 0.5 + 0.3,
-            twinkle: Math.random() * Math.PI * 2
-        };
-    }
-
-    drawPetal(p) {
+    drawPetal(item) {
         this.ctx.save();
-        this.ctx.translate(p.x, p.y);
-        this.ctx.rotate(p.rotation * Math.PI / 180);
-        this.ctx.globalAlpha = p.opacity;
-        
+        this.ctx.translate(item.x, item.y);
+        this.ctx.rotate(item.rotation);
+        this.ctx.globalAlpha = item.opacity;
+        this.ctx.fillStyle = "#f0c4d0";
         this.ctx.beginPath();
-        this.ctx.moveTo(0, 0);
-        this.ctx.bezierCurveTo(p.size, -p.size/2, p.size, p.size/2, 0, p.size);
-        this.ctx.bezierCurveTo(-p.size, p.size/2, -p.size, -p.size/2, 0, 0);
-        
-        const gradient = this.ctx.createLinearGradient(-p.size, -p.size, p.size, p.size);
-        gradient.addColorStop(0, '#e8b4b8');
-        gradient.addColorStop(1, '#f5e6e8');
-        this.ctx.fillStyle = gradient;
+        this.ctx.moveTo(0, -item.size * 0.2);
+        this.ctx.bezierCurveTo(item.size * 0.9, -item.size, item.size * 0.95, item.size * 0.8, 0, item.size);
+        this.ctx.bezierCurveTo(-item.size * 0.95, item.size * 0.8, -item.size * 0.9, -item.size, 0, -item.size * 0.2);
         this.ctx.fill();
-        
         this.ctx.restore();
     }
 
-    drawHeart(p) {
+    drawSpark(item) {
         this.ctx.save();
-        this.ctx.translate(p.x, p.y);
-        this.ctx.rotate(p.rotation * Math.PI / 180);
-        this.ctx.globalAlpha = p.opacity;
-        
-        const s = p.size;
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, -s * 0.3);
-        this.ctx.bezierCurveTo(-s, -s * 0.3, -s, s * 0.5, 0, s * 0.9);
-        this.ctx.bezierCurveTo(s, s * 0.5, s, -s * 0.3, 0, -s * 0.3);
-        
-        const gradient = this.ctx.createLinearGradient(-s, -s, s, s);
-        gradient.addColorStop(0, '#e8b4b8');
-        gradient.addColorStop(1, '#d4a5a9');
-        this.ctx.fillStyle = gradient;
-        this.ctx.fill();
-        
-        this.ctx.restore();
-    }
-
-    drawSparkle(p) {
-        const twinkle = Math.sin(p.twinkle) * 0.3 + 0.7;
-        this.ctx.save();
-        this.ctx.translate(p.x, p.y);
-        this.ctx.rotate(p.rotation * Math.PI / 180);
-        this.ctx.globalAlpha = p.opacity * twinkle;
-        
-        const s = p.size;
-        this.ctx.strokeStyle = 'rgba(232, 180, 184, 0.9)';
+        this.ctx.translate(item.x, item.y);
+        this.ctx.rotate(item.rotation);
+        this.ctx.globalAlpha = item.opacity * (0.65 + Math.sin(item.drift) * 0.25);
+        this.ctx.strokeStyle = "#f4deae";
         this.ctx.lineWidth = 1;
         this.ctx.beginPath();
-        this.ctx.moveTo(0, -s);
-        this.ctx.lineTo(0, s);
-        this.ctx.moveTo(-s, 0);
-        this.ctx.lineTo(s, 0);
-        this.ctx.moveTo(-s * 0.7, -s * 0.7);
-        this.ctx.lineTo(s * 0.7, s * 0.7);
-        this.ctx.moveTo(-s * 0.7, s * 0.7);
-        this.ctx.lineTo(s * 0.7, -s * 0.7);
+        this.ctx.moveTo(-item.size * 2, 0);
+        this.ctx.lineTo(item.size * 2, 0);
+        this.ctx.moveTo(0, -item.size * 2);
+        this.ctx.lineTo(0, item.size * 2);
         this.ctx.stroke();
-        
         this.ctx.restore();
     }
 
-    animate() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.particles.forEach(p => {
-            if (p.type === 'petal') this.drawPetal(p);
-            else if (p.type === 'heart') this.drawHeart(p);
-            else if (p.type === 'sparkle') this.drawSparkle(p);
-            
-            p.x += p.speedX;
-            p.y += p.speedY;
-            p.rotation += p.rotationSpeed;
-            if (p.twinkle !== undefined) p.twinkle += 0.08;
-            
-            if (p.y > this.canvas.height + 20) {
-                p.y = -20;
-                p.x = Math.random() * this.canvas.width;
+    frame() {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        for (const item of this.items) {
+            item.x += item.speedX + Math.sin(item.drift) * 0.08;
+            item.y += item.speedY;
+            item.rotation += item.rotationSpeed;
+            item.drift += 0.02;
+
+            if (item.type === "petal") {
+                this.drawPetal(item);
+            } else {
+                this.drawSpark(item);
+            }
+
+            if (item.y > this.height + 30 || item.x < -40 || item.x > this.width + 40) {
+                Object.assign(item, this.createItem());
+            }
+        }
+
+        window.requestAnimationFrame(() => this.frame());
+    }
+}
+
+function padNumber(value) {
+    return String(value).padStart(2, "0");
+}
+
+function switchSection(nextId) {
+    if (nextId === state.currentSection) return;
+
+    const current = document.getElementById(state.currentSection);
+    const next = document.getElementById(nextId);
+    if (!current || !next) return;
+
+    current.classList.remove("active");
+    next.classList.add("active");
+    state.currentSection = nextId;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function loadPhoto(file) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(file);
+        img.onerror = () => resolve(null);
+        img.src = `images/${file}`;
+    });
+}
+
+async function resolvePhotos() {
+    const results = await Promise.all(photoFiles.map(loadPhoto));
+    state.photos = results.filter(Boolean);
+    const counter = document.getElementById("photoCount");
+    if (counter) {
+        counter.textContent = String(state.photos.length || TOTAL_PHOTOS);
+    }
+}
+
+function createFeaturedCard(file, photoIndex, slotIndex) {
+    const card = document.createElement("button");
+    card.className = "featured-card";
+    card.type = "button";
+    card.style.setProperty("--rotation", `${[-4, 3, -2, 2, -3][slotIndex % 5]}deg`);
+    card.dataset.label = featuredLabels[slotIndex % featuredLabels.length];
+    card.addEventListener("click", () => openLightbox(photoIndex));
+
+    const image = document.createElement("img");
+    image.src = `images/${file}`;
+    image.alt = `Memory photo ${photoIndex + 1}`;
+    image.loading = "lazy";
+    image.decoding = "async";
+
+    card.appendChild(image);
+    return card;
+}
+
+function createPhotoCard(file, index) {
+    const item = document.createElement("article");
+    item.className = "photo-item";
+    item.style.setProperty("--stagger", `${Math.min(index * 30, 480)}ms`);
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "photo-button";
+    button.addEventListener("click", () => openLightbox(index));
+
+    const frame = document.createElement("div");
+    frame.className = "photo-frame";
+
+    const image = document.createElement("img");
+    image.src = `images/${file}`;
+    image.alt = `Memory photo ${index + 1}`;
+    image.loading = "lazy";
+    image.decoding = "async";
+
+    const meta = document.createElement("div");
+    meta.className = "photo-meta";
+
+    const order = document.createElement("span");
+    order.className = "photo-index";
+    order.textContent = `No. ${padNumber(index + 1)}`;
+
+    const caption = document.createElement("span");
+    caption.className = "photo-caption";
+    caption.textContent = "Open photo";
+
+    meta.append(order, caption);
+    frame.appendChild(image);
+    button.append(frame, meta);
+    item.appendChild(button);
+    return item;
+}
+
+function setupRevealAnimations() {
+    const items = document.querySelectorAll(".photo-item");
+
+    if (!("IntersectionObserver" in window)) {
+        items.forEach((item) => item.classList.add("is-visible"));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                observer.unobserve(entry.target);
             }
         });
-        requestAnimationFrame(() => this.animate());
-    }
-}
-
-// --- 页面切换逻辑 ---
-function switchSection(currentId, nextId) {
-    const current = document.getElementById(currentId);
-    const next = document.getElementById(nextId);
-    
-    current.style.opacity = '0';
-    setTimeout(() => {
-        current.classList.remove('active');
-        current.style.opacity = '1';
-        next.classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        
-        if (nextId === 'heart-wall') setTimeout(initHeartWall, 100);
-    }, 500);
-}
-
-// --- 照片墙逻辑 (浪漫瀑布流升级版) ---
-function initGallery() {
-    const photoGrid = document.getElementById('photoGrid');
-    if(photoGrid.children.length > 0) return;
-
-    photoFiles.forEach((file, index) => {
-        const photoItem = document.createElement('div');
-        photoItem.className = 'photo-item';
-        
-        photoItem.style.animationDelay = `${index * 0.08}s`;
-        
-        const img = document.createElement('img');
-        img.src = `images/${file}`;
-        img.alt = `Memory`;
-        img.onclick = () => openLightbox(index);
-        
-        img.onerror = function() {
-            this.style.display = 'none';
-        };
-        
-        photoItem.appendChild(img);
-        photoGrid.appendChild(photoItem);
+    }, {
+        rootMargin: "0px 0px -8% 0px",
+        threshold: 0.05
     });
+
+    items.forEach((item) => observer.observe(item));
 }
 
-// --- 手机适配版心形逻辑 ---
-function generateHeartPositions(count) {
-    const positions = [];
-    const container = document.getElementById('heartContainer');
-    const w = container.offsetWidth;
-    const h = container.offsetHeight - 50; 
-    
-    const isMobile = window.innerWidth < 768;
-    const scale = isMobile ? (w * 0.9) / 32 : (Math.min(w, h) * 0.015);
-    
-    for (let i = 0; i < count; i++) {
-        const t = (i / count) * 2 * Math.PI + Math.PI;
-        const x = scale * 16 * Math.pow(Math.sin(t), 3);
-        const y = -scale * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
-        positions.push({ 
-            x: w/2 + x, 
-            y: h/2 + y - (isMobile ? 30 : 0)
-        });
-    }
-    return positions;
-}
+function renderGallery() {
+    if (state.galleryReady) return;
 
-function initHeartWall() {
-    const container = document.getElementById('heartContainer');
-    const title = container.querySelector('.heart-title');
-    const oldTitle = title ? title.cloneNode(true) : null;
-    container.innerHTML = '';
-    if (oldTitle) container.appendChild(oldTitle);
-    
-    const positions = generateHeartPositions(photoFiles.length);
-    
-    photoFiles.forEach((file, index) => {
-        const div = document.createElement('div');
-        div.className = 'heart-photo';
-        div.style.left = Math.random() * window.innerWidth + 'px';
-        div.style.top = Math.random() * window.innerHeight + 'px';
-        div.style.opacity = 0;
-        
-        const img = document.createElement('img');
-        img.src = `images/${file}`;
-        div.appendChild(img);
-        
-        div.onclick = () => openLightbox(index);
-        container.appendChild(div);
-        
-        setTimeout(() => {
-            div.style.left = (positions[index].x - div.offsetWidth/2) + 'px';
-            div.style.top = (positions[index].y - div.offsetHeight/2) + 'px';
-            div.style.opacity = 1;
-        }, 100 + index * 20);
+    const photoGrid = document.getElementById("photoGrid");
+    const featuredStrip = document.getElementById("featuredStrip");
+    const photos = state.photos.length ? state.photos : photoFiles;
+    const featuredIndices = [0, 9, 21, 40, photos.length - 1]
+        .map((index) => Math.max(0, Math.min(index, photos.length - 1)));
+
+    const featuredFragment = document.createDocumentFragment();
+    featuredIndices.forEach((photoIndex, slotIndex) => {
+        const file = photos[photoIndex];
+        if (file) featuredFragment.appendChild(createFeaturedCard(file, photoIndex, slotIndex));
     });
+
+    const gridFragment = document.createDocumentFragment();
+    photos.forEach((file, index) => {
+        gridFragment.appendChild(createPhotoCard(file, index));
+    });
+
+    featuredStrip.appendChild(featuredFragment);
+    photoGrid.appendChild(gridFragment);
+    setupRevealAnimations();
+    state.galleryReady = true;
 }
 
-// --- Lightbox ---
 function openLightbox(index) {
-    const lightbox = document.getElementById('lightbox');
-    const img = document.getElementById('lightboxImg');
-    const counter = document.getElementById('imageCounter');
-    
-    img.src = `images/${photoFiles[index]}`;
-    if(counter) counter.innerText = `${index + 1} / ${TOTAL_PHOTOS}`;
-    lightbox.classList.add('active');
+    const photos = state.photos.length ? state.photos : photoFiles;
+    state.lightboxIndex = index;
+    const lightbox = document.getElementById("lightbox");
+    const image = document.getElementById("lightboxImg");
+    const counter = document.getElementById("imageCounter");
+
+    image.src = `images/${photos[state.lightboxIndex]}`;
+    counter.textContent = `${padNumber(state.lightboxIndex + 1)} / ${padNumber(photos.length)}`;
+    lightbox.classList.add("active");
+    lightbox.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
 }
 
-// --- 📥 下载贺卡功能 ---
+function closeLightbox() {
+    const lightbox = document.getElementById("lightbox");
+    lightbox.classList.remove("active");
+    lightbox.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+}
+
+function stepLightbox(direction) {
+    const photos = state.photos.length ? state.photos : photoFiles;
+    state.lightboxIndex = (state.lightboxIndex + direction + photos.length) % photos.length;
+    openLightbox(state.lightboxIndex);
+}
+
 function downloadCard() {
-    const btn = document.getElementById('saveBtn');
-    const originalText = btn.innerText;
-    btn.innerText = "⏳ 正在生成精美信件...";
-    
-    const cardElement = document.getElementById('letter-content');
-    
-    html2canvas(cardElement, {
-        backgroundColor: '#fffaf9',
-        scale: 2, 
-        useCORS: true,
-        onclone: (clonedDoc) => {
-            const clonedCard = clonedDoc.getElementById('letter-content');
-            clonedCard.style.border = 'none';
-            clonedCard.style.boxShadow = 'none';
-        }
-    }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = '给LJZ的一封信.png';
-        link.href = canvas.toDataURL('image/png');
+    const button = document.getElementById("saveBtn");
+    const originalText = button.textContent;
+    button.textContent = "????...";
+
+    html2canvas(document.getElementById("letter-content"), {
+        backgroundColor: "#fff9fb",
+        scale: 2,
+        useCORS: true
+    }).then((canvas) => {
+        const link = document.createElement("a");
+        link.download = "?LJZ????.png";
+        link.href = canvas.toDataURL("image/png");
         link.click();
-        
-        btn.innerText = "✅ 保存成功";
-        setTimeout(() => btn.innerText = originalText, 2000);
-    }).catch(err => {
-        console.error(err);
-        btn.innerText = "❌ 保存失败";
-        alert("保存出错了，可能是浏览器限制，建议直接截屏哦！");
+        button.textContent = "???";
+        window.setTimeout(() => {
+            button.textContent = originalText;
+        }, 1600);
+    }).catch(() => {
+        button.textContent = "????";
+        window.setTimeout(() => {
+            button.textContent = originalText;
+        }, 1600);
     });
 }
 
+async function init() {
+    new AmbientParticleSystem();
+    await resolvePhotos();
 
-// --- 启动 ---
-document.addEventListener('DOMContentLoaded', () => {
-    new RomanticParticleSystem();
-    
-    document.querySelector('.heart-container').addEventListener('click', () => {
-        initGallery();
-        switchSection('intro', 'gallery');
-    });
-    
-    document.getElementById('toHeartBtn').addEventListener('click', () => {
-        switchSection('gallery', 'heart-wall');
-    });
-    
-    document.getElementById('toCardBtn').addEventListener('click', () => {
-        switchSection('heart-wall', 'card');
-    });
-    
-    document.getElementById('replayBtn').addEventListener('click', () => {
-        switchSection('card', 'intro');
+    document.getElementById("startBtn").addEventListener("click", () => {
+        renderGallery();
+        switchSection("gallery");
     });
 
-    document.getElementById('saveBtn').addEventListener('click', downloadCard);
-    
-    document.querySelector('.close-btn').addEventListener('click', () => {
-        document.getElementById('lightbox').classList.remove('active');
+    document.getElementById("toCardBtn").addEventListener("click", () => {
+        switchSection("card");
     });
-    
-    document.getElementById('lightbox').addEventListener('click', (e) => {
-        if (e.target.id === 'lightbox') {
-            document.getElementById('lightbox').classList.remove('active');
+
+    document.getElementById("backToTopBtn").addEventListener("click", () => {
+        switchSection("intro");
+    });
+
+    document.getElementById("replayBtn").addEventListener("click", () => {
+        switchSection("intro");
+    });
+
+    document.getElementById("saveBtn").addEventListener("click", downloadCard);
+    document.getElementById("closeLightboxBtn").addEventListener("click", closeLightbox);
+    document.getElementById("prevPhotoBtn").addEventListener("click", () => stepLightbox(-1));
+    document.getElementById("nextPhotoBtn").addEventListener("click", () => stepLightbox(1));
+
+    document.getElementById("lightbox").addEventListener("click", (event) => {
+        if (event.target.id === "lightbox") {
+            closeLightbox();
         }
     });
-});
+
+    document.addEventListener("keydown", (event) => {
+        const isOpen = document.getElementById("lightbox").classList.contains("active");
+        if (!isOpen) return;
+
+        if (event.key === "Escape") closeLightbox();
+        if (event.key === "ArrowLeft") stepLightbox(-1);
+        if (event.key === "ArrowRight") stepLightbox(1);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", init);
+

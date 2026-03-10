@@ -1,22 +1,22 @@
-/* --- 高级浪漫主题变量 --- */
-:root {
-    --primary: #e8b4b8;           /* 玫瑰粉 */
-    --primary-deep: #d4a5a9;      /* 深玫瑰 */
-    --secondary: #f5e6e8;        /* 淡粉白 */
-    --accent: #c9a9a6;           /* 玫瑰金 */
-    --accent-gold: #d4af37;      /* 香槟金点缀 */
-    --text: #5c4a4a;             /* 暖灰棕 */
-    --text-light: #8b7b7b;       /* 浅灰棕 */
-    --card-bg: rgba(255, 250, 250, 0.95);
-    --card-shadow: rgba(139, 90, 90, 0.15);
-    --glow: rgba(232, 180, 184, 0.5);
+﻿:root {
+    --bg: #120f1d;
+    --bg-soft: #1c162a;
+    --panel: rgba(255, 248, 250, 0.78);
+    --panel-strong: rgba(255, 250, 252, 0.9);
+    --border: rgba(255, 255, 255, 0.32);
+    --text: #2f2437;
+    --text-soft: #6d5d72;
+    --rose: #d88ca0;
+    --rose-deep: #b86c84;
+    --gold: #d7b27a;
+    --shadow: 0 24px 80px rgba(28, 17, 36, 0.18);
+    --shadow-soft: 0 12px 36px rgba(28, 17, 36, 0.12);
 }
 
-/* --- 基础重置 --- */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
 html {
@@ -24,561 +24,667 @@ html {
 }
 
 body {
-    font-family: 'Noto Serif SC', 'Georgia', serif;
-    color: var(--text);
+    min-height: 100vh;
     overflow-x: hidden;
-    position: relative;
-    background: #faf5f5;
+    font-family: "Noto Serif SC", serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at top, rgba(255, 212, 223, 0.18), transparent 32%),
+        linear-gradient(180deg, #17131f 0%, #251c32 30%, #f6eff1 100%);
 }
 
-/* --- 高级流光背景 --- */
-.bg-gradient {
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+button {
+    border: 0;
+    cursor: pointer;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+.bg-gradient,
+.glow,
+#particles {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232, 180, 184, 0.4)),
-        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(255, 228, 225, 0.5)),
-        radial-gradient(ellipse 50% 50% at 20% 80%, rgba(245, 230, 232, 0.6)),
-        linear-gradient(180deg, #fffaf9 0%, #fdf5f5 50%, #faf0f0 100%);
-    background-size: 100% 100%;
+    inset: 0;
+    pointer-events: none;
+}
+
+.bg-gradient {
+    background:
+        radial-gradient(circle at 18% 18%, rgba(228, 144, 173, 0.28), transparent 28%),
+        radial-gradient(circle at 82% 14%, rgba(215, 178, 122, 0.18), transparent 24%),
+        radial-gradient(circle at 75% 78%, rgba(255, 222, 229, 0.32), transparent 30%);
     z-index: 0;
 }
 
-/* 微妙的动态光晕 */
-.bg-gradient::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
-    animation: softGlow 8s ease-in-out infinite;
-    pointer-events: none;
+.glow {
+    filter: blur(64px);
+    opacity: 0.7;
+    z-index: 0;
+    animation: floatGlow 12s ease-in-out infinite;
 }
 
-@keyframes softGlow {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
+.glow-left {
+    inset: 10% auto auto 6%;
+    width: 18rem;
+    height: 18rem;
+    background: rgba(219, 138, 163, 0.28);
 }
 
-/* 粒子画布 */
+.glow-right {
+    inset: auto 8% 12% auto;
+    width: 22rem;
+    height: 22rem;
+    background: rgba(214, 182, 140, 0.2);
+    animation-delay: -5s;
+}
+
 #particles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
     z-index: 1;
 }
 
-/* --- 通用部分容器 --- */
+.page-shell {
+    position: relative;
+    z-index: 2;
+}
+
 .section {
     min-height: 100vh;
     display: none;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 40px 24px;
-    position: relative;
-    z-index: 2;
-    opacity: 0;
-    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 40px 20px;
 }
 
 .section.active {
     display: flex;
-    opacity: 1;
-    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.hero-card,
+.section-shell {
+    width: min(1100px, 100%);
+}
+
+.hero-card {
+    position: relative;
+    padding: 72px 64px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 36px;
+    background:
+        linear-gradient(145deg, rgba(255, 248, 251, 0.72), rgba(255, 244, 247, 0.48)),
+        rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(18px);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.hero-card::before,
+.hero-card::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.hero-card::before {
+    width: 16rem;
+    height: 16rem;
+    right: -4rem;
+    top: -5rem;
+    background: radial-gradient(circle, rgba(216, 140, 160, 0.28), transparent 68%);
+}
+
+.hero-card::after {
+    width: 13rem;
+    height: 13rem;
+    left: -3rem;
+    bottom: -4rem;
+    background: radial-gradient(circle, rgba(215, 178, 122, 0.2), transparent 72%);
+}
+
+.hero-kicker,
+.section-kicker,
+.letter-tag {
+    font-size: 0.8rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--rose-deep);
+}
+
+.hero-title,
+.section-title,
+.card-title {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.hero-title {
+    max-width: 13ch;
+    margin-top: 18px;
+    font-size: clamp(3.6rem, 7vw, 6.5rem);
+    line-height: 0.92;
+    color: #2a1d31;
+}
+
+.hero-text {
+    max-width: 38rem;
+    margin-top: 24px;
+    font-size: 1.08rem;
+    line-height: 1.9;
+    color: var(--text-soft);
+}
+
+.hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.hero-meta span {
+    padding: 10px 16px;
+    border: 1px solid rgba(184, 108, 132, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.54);
+    color: var(--text-soft);
+    font-size: 0.92rem;
+}
+
+.section-shell {
+    padding: 24px 0;
+}
+
+.section-copy {
+    display: grid;
+    gap: 12px;
+    justify-items: start;
 }
 
 .section-title {
-    font-family: 'Dancing Script', cursive;
-    font-size: clamp(2.5rem, 6vw, 3.5rem);
-    color: var(--text);
-    margin-bottom: 40px;
-    letter-spacing: 2px;
-    text-align: center;
-    font-weight: 700;
+    max-width: 15ch;
+    font-size: clamp(2.8rem, 5vw, 4.8rem);
+    line-height: 1;
 }
 
-/* --- 1. 首页 (Intro) --- */
-#intro {
-    min-height: 100vh;
+.section-desc {
+    max-width: 42rem;
+    color: var(--text-soft);
+    line-height: 1.95;
+    font-size: 1rem;
 }
 
-.heart-container {
-    width: 140px;
-    height: 140px;
-    background: rgba(255, 255, 255, 0.6);
-    border-radius: 50%;
+.memory-overview {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 18px;
+    margin-top: 28px;
+    margin-bottom: 28px;
+}
+
+.memory-badge,
+.memory-note {
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-soft);
+}
+
+.memory-badge {
+    display: grid;
+    place-items: center;
+    min-height: 170px;
+    padding: 18px;
+}
+
+.memory-number {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 4.2rem;
+    line-height: 1;
+    color: var(--rose-deep);
+}
+
+.memory-label {
+    margin-top: 6px;
+    color: var(--text-soft);
+    font-size: 0.95rem;
+}
+
+.memory-note {
     display: flex;
     align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    cursor: pointer;
-    box-shadow: 
-        0 0 0 1px rgba(255,255,255,0.8),
-        0 0 40px var(--glow),
-        0 20px 60px var(--card-shadow);
-    animation: pulse 2.5s ease-in-out infinite;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.heart-container:hover {
-    transform: scale(1.08);
-}
-
-.heart {
-    background: linear-gradient(135deg, #e8b4b8 0%, #d4a5a9 100%);
-    width: 56px;
-    height: 56px;
-    transform: rotate(-45deg);
-    position: relative;
-    animation: heartbeat 1.4s ease-in-out infinite;
-    box-shadow: 0 4px 15px rgba(212, 165, 169, 0.4);
-}
-
-.heart::before,
-.heart::after {
-    content: "";
-    position: absolute;
-    width: 56px;
-    height: 56px;
-    background: linear-gradient(135deg, #e8b4b8 0%, #d4a5a9 100%);
-    border-radius: 50%;
-}
-
-.heart::before { top: -28px; left: 0; }
-.heart::after { left: 28px; top: 0; }
-
-@keyframes pulse {
-    0%, 100% { 
-        box-shadow: 0 0 0 0 rgba(232, 180, 184, 0.4);
-    }
-    50% { 
-        box-shadow: 0 0 0 25px rgba(232, 180, 184, 0);
-    }
-}
-
-@keyframes heartbeat {
-    0%, 100% { transform: rotate(-45deg) scale(1); }
-    15% { transform: rotate(-45deg) scale(1.15); }
-    30% { transform: rotate(-45deg) scale(1); }
-    45% { transform: rotate(-45deg) scale(1.15); }
-}
-
-.intro-text {
-    font-family: 'Dancing Script', cursive;
-    font-size: clamp(2.8rem, 7vw, 4rem);
+    padding: 26px 28px;
+    line-height: 1.9;
     color: var(--text);
-    margin-top: 48px;
-    letter-spacing: 3px;
-    text-align: center;
-    font-weight: 700;
 }
 
-.intro-subtitle {
-    color: var(--text-light);
-    margin-top: 16px;
-    font-size: 1.1rem;
-    letter-spacing: 4px;
-    text-align: center;
-    font-weight: 400;
-}
-
-/* --- 2. 照片墙 (Gallery) --- */
-.photo-grid {
+.featured-strip {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 14px;
+    margin-bottom: 24px;
+}
+
+.featured-card {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    padding: 8px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.36);
+    background: rgba(255, 255, 255, 0.62);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    transform: rotate(var(--rotation, 0deg));
+}
+
+.featured-card img {
     width: 100%;
-    max-width: 920px;
-    padding-bottom: 32px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 18px;
+}
+
+.featured-card::after {
+    content: attr(data-label);
+    position: absolute;
+    left: 16px;
+    bottom: 14px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(28, 17, 36, 0.48);
+    color: #fff7fb;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+}
+
+.photo-grid {
+    columns: 4 220px;
+    column-gap: 18px;
 }
 
 .photo-item {
-    aspect-ratio: 1;
-    border-radius: 12px;
+    break-inside: avoid;
+    margin-bottom: 18px;
+    border-radius: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: var(--shadow-soft);
     overflow: hidden;
-    box-shadow: 
-        0 4px 20px var(--card-shadow),
-        0 0 0 1px rgba(255,255,255,0.8);
-    background: #fff;
-    padding: 6px;
+    transform: translateY(28px);
     opacity: 0;
-    animation: romanticEntrance 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+        transform 0.8s cubic-bezier(0.19, 1, 0.22, 1),
+        opacity 0.8s ease,
+        box-shadow 0.3s ease;
+    transition-delay: var(--stagger, 0ms);
+}
+
+.photo-item.is-visible {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 .photo-item:hover {
-    transform: translateY(-8px) scale(1.03);
-    box-shadow: 0 12px 35px rgba(139, 90, 90, 0.2);
-    z-index: 10;
+    box-shadow: 0 18px 50px rgba(28, 17, 36, 0.16);
 }
 
-.photo-item img {
+.photo-button {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-@keyframes romanticEntrance {
-    0% {
-        opacity: 0;
-        transform: translateY(50px) scale(0.9) rotate(-2deg);
-        filter: blur(5px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1) rotate(0deg);
-        filter: blur(0);
-    }
-}
-
-/* --- 3. 心形墙 (Heart Wall) --- */
-.heart-photo-container {
-    position: relative;
-    width: 100vw;
-    height: 65vh;
-    margin-bottom: 32px;
-}
-
-.heart-title {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: 'Dancing Script', cursive;
-    font-size: clamp(2rem, 4vw, 2.8rem);
-    color: var(--text);
-    background: rgba(255, 255, 255, 0.95);
-    padding: 14px 36px;
-    border-radius: 50px;
-    box-shadow: 0 8px 32px var(--card-shadow);
-    z-index: 100;
-    white-space: nowrap;
-    letter-spacing: 2px;
-}
-
-.heart-photo {
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    border: 2px solid rgba(255,255,255,0.9);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px var(--card-shadow);
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    cursor: pointer;
-}
-
-.heart-photo:hover {
-    z-index: 50;
-    transform: scale(1.4) !important;
-    box-shadow: 0 12px 30px rgba(139, 90, 90, 0.25);
-}
-
-.heart-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* --- 4. 贺卡 (高级信纸风格) --- */
-.birthday-card {
-    background: var(--card-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: 20px;
-    padding: 48px 44px;
-    width: 100%;
-    max-width: 640px;
-    box-shadow: 
-        0 0 0 1px rgba(255,255,255,0.9),
-        0 25px 80px var(--card-shadow);
-    position: relative;
-    margin-bottom: 36px;
+    background: transparent;
     text-align: left;
+}
+
+.photo-frame {
+    padding: 8px 8px 0;
+}
+
+.photo-frame img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+}
+
+.photo-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px 16px;
+}
+
+.photo-index {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.05rem;
+    color: var(--rose-deep);
+}
+
+.photo-caption {
+    color: var(--text-soft);
+    font-size: 0.88rem;
+}
+
+.card-shell {
+    display: grid;
+    gap: 28px;
+}
+
+.card-intro {
+    display: grid;
+    gap: 12px;
+}
+
+.birthday-card {
+    position: relative;
+    padding: 44px 36px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.54);
+    background:
+        linear-gradient(180deg, rgba(255, 250, 252, 0.95), rgba(255, 246, 248, 0.92));
+    box-shadow: var(--shadow);
     overflow: hidden;
 }
 
-/* 信纸纹理 */
 .birthday-card::before {
-    content: '';
+    content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
+    inset: 0;
+    background:
+        linear-gradient(90deg, transparent 0, rgba(216, 140, 160, 0.05) 50%, transparent 100%),
         repeating-linear-gradient(
-            transparent,
-            transparent 31px,
-            rgba(232, 180, 184, 0.06) 31px,
-            rgba(232, 180, 184, 0.06) 32px
+            180deg,
+            transparent 0,
+            transparent 33px,
+            rgba(184, 108, 132, 0.06) 33px,
+            rgba(184, 108, 132, 0.06) 34px
         );
     pointer-events: none;
 }
 
-/* 爱心蜡戳 */
 .wax-seal {
     position: absolute;
+    right: 28px;
     top: 24px;
-    right: 24px;
-    width: 64px;
-    height: 64px;
-    background: linear-gradient(135deg, #b8860b 0%, #8b6914 50%, #c9a227 100%);
+    width: 72px;
+    height: 72px;
+    display: grid;
+    place-items: center;
     border-radius: 50%;
-    box-shadow: 
-        inset 0 2px 4px rgba(255,255,255,0.3),
-        inset 0 -2px 4px rgba(0,0,0,0.2),
-        0 6px 20px rgba(139, 90, 90, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff8e7;
-    font-family: 'Dancing Script', cursive;
-    font-weight: bold;
-    font-size: 1.3rem;
-    border: 4px solid rgba(255,255,255,0.5);
-    transform: rotate(12deg);
-    z-index: 2;
+    background: radial-gradient(circle at 30% 30%, #f4d2dc, #b66680 68%, #8e4660 100%);
+    color: #fff9fb;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.15rem;
+    letter-spacing: 0.08em;
+    box-shadow: 0 12px 32px rgba(142, 70, 96, 0.26);
+}
+
+.card-header,
+.card-body,
+.signature {
+    position: relative;
+    z-index: 1;
 }
 
 .card-header {
-    text-align: center;
-    border-bottom: 2px solid rgba(232, 180, 184, 0.5);
-    padding-bottom: 24px;
-    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(184, 108, 132, 0.18);
 }
 
 .card-title {
-    font-family: 'Dancing Script', cursive;
-    color: var(--text);
-    font-size: clamp(2.2rem, 4vw, 2.8rem);
-    margin-bottom: 8px;
-    letter-spacing: 2px;
+    margin-top: 8px;
+    font-size: clamp(2.8rem, 5vw, 4rem);
 }
 
 .card-date {
-    color: var(--text-light);
-    font-size: 1.05rem;
-    letter-spacing: 2px;
+    margin-top: 8px;
+    color: var(--text-soft);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 0.82rem;
+}
+
+.card-body {
+    margin-top: 24px;
 }
 
 .card-body p {
-    margin-bottom: 18px;
-    font-size: 1.05rem;
+    margin-bottom: 16px;
     line-height: 2;
-    color: var(--text);
-    text-align: justify;
+    color: #423544;
 }
 
 .signature {
-    margin-top: 48px;
-    text-align: right;
+    margin-top: 34px;
+    padding-top: 18px;
 }
 
 .big-sign {
-    font-family: 'Dancing Script', cursive;
-    font-size: 2rem;
-    color: var(--primary-deep);
-    margin: 12px 0;
+    margin-top: 8px;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 2.2rem;
+    color: var(--rose-deep);
 }
 
 .from {
-    font-weight: 600;
-    color: var(--text);
-    font-size: 1.1rem;
+    margin-top: 8px;
+    color: var(--text-soft);
 }
 
-/* --- 按钮样式 --- */
 .btn-group {
     display: flex;
-    gap: 16px;
     flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
+    gap: 14px;
+    margin-top: 8px;
 }
 
-button {
-    padding: 14px 40px;
-    border: none;
-    border-radius: 50px;
-    font-size: 1.05rem;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    font-family: 'Noto Serif SC', serif;
-    letter-spacing: 1px;
+.primary-btn,
+.ghost-btn {
+    min-height: 54px;
+    padding: 0 24px;
+    border-radius: 999px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
-button:hover {
-    transform: translateY(-3px);
+.primary-btn:hover,
+.ghost-btn:hover,
+.icon-btn:hover {
+    transform: translateY(-2px);
 }
 
-button:active {
-    transform: scale(0.98);
+.primary-btn {
+    background: linear-gradient(135deg, #d88ca0 0%, #b86c84 100%);
+    color: #fffafc;
+    box-shadow: 0 18px 30px rgba(184, 108, 132, 0.22);
 }
 
-.next-btn {
-    background: linear-gradient(135deg, #e8b4b8 0%, #d4a5a9 100%);
-    color: #fff;
-    box-shadow: 0 6px 24px rgba(212, 165, 169, 0.35);
-}
-
-.next-btn:hover {
-    box-shadow: 0 10px 32px rgba(212, 165, 169, 0.45);
-}
-
-.save-btn {
-    background: linear-gradient(135deg, #c9a9a6 0%, #b89996 100%);
-    color: #fff;
-    box-shadow: 0 6px 24px rgba(139, 90, 90, 0.2);
-}
-
-.save-btn:hover {
-    box-shadow: 0 10px 32px rgba(139, 90, 90, 0.3);
-}
-
-.replay-btn {
-    background: #fff;
+.ghost-btn {
+    background: rgba(255, 255, 255, 0.7);
     color: var(--text);
-    border: 2px solid rgba(232, 180, 184, 0.5);
-    box-shadow: 0 4px 16px var(--card-shadow);
+    border: 1px solid rgba(184, 108, 132, 0.14);
+    box-shadow: var(--shadow-soft);
 }
 
-.replay-btn:hover {
-    border-color: var(--primary);
-    background: rgba(232, 180, 184, 0.1);
-}
-
-/* --- Lightbox --- */
 #lightbox {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(92, 74, 74, 0.95);
-    backdrop-filter: blur(8px);
-    z-index: 1000;
+    inset: 0;
+    z-index: 10;
     display: none;
     align-items: center;
     justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    padding: 24px;
+    background: rgba(15, 10, 21, 0.78);
+    backdrop-filter: blur(18px);
 }
 
 #lightbox.active {
     display: flex;
-    opacity: 1;
+}
+
+.lightbox-content {
+    display: grid;
+    justify-items: center;
+    gap: 16px;
 }
 
 #lightboxImg {
-    max-width: 90%;
-    max-height: 85vh;
-    border-radius: 12px;
-    box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+    max-width: min(88vw, 1000px);
+    max-height: 78vh;
+    border-radius: 28px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+#imageCounter {
+    color: rgba(255, 247, 251, 0.9);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 0.84rem;
+}
+
+.icon-btn {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 1.7rem;
 }
 
 .close-btn {
     position: absolute;
-    top: 24px;
-    right: 24px;
-    background: rgba(255,255,255,0.1);
-    border: none;
-    color: #fff;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    font-size: 28px;
-    cursor: pointer;
-    z-index: 1001;
-    transition: background 0.3s;
+    top: 22px;
+    right: 22px;
 }
 
-.close-btn:hover {
-    background: rgba(255,255,255,0.2);
-}
-
-#imageCounter {
+.nav-btn {
     position: absolute;
-    bottom: 32px;
-    color: rgba(255,255,255,0.9);
-    font-size: 1.1rem;
-    font-family: 'Noto Serif SC', serif;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
 }
 
-/* --- 📱 响应式 --- */
-@media (max-width: 768px) {
-    .section {
-        padding: 24px 16px;
+.prev-btn {
+    left: 22px;
+}
+
+.next-btn {
+    right: 22px;
+}
+
+@keyframes floatGlow {
+    0%, 100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+        transform: translate3d(0, -18px, 0) scale(1.04);
+    }
+}
+
+@media (max-width: 960px) {
+    .hero-card {
+        padding: 56px 28px;
+    }
+
+    .memory-overview {
+        grid-template-columns: 1fr;
+    }
+
+    .featured-strip {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .photo-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+        columns: 3 180px;
+    }
+}
+
+@media (max-width: 720px) {
+    .section {
+        padding: 24px 14px;
     }
 
-    .heart-photo {
-        width: 45px;
-        height: 45px;
-        border-width: 1.5px;
+    .hero-title {
+        max-width: none;
+        font-size: clamp(3rem, 16vw, 4.2rem);
     }
 
-    .heart-title {
-        font-size: 1.6rem;
-        padding: 8px 24px;
+    .hero-text,
+    .section-desc,
+    .card-body p {
+        line-height: 1.85;
+    }
+
+    .featured-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .photo-grid {
+        columns: 2 140px;
+        column-gap: 12px;
+    }
+
+    .photo-item {
+        margin-bottom: 12px;
     }
 
     .birthday-card {
-        padding: 28px 20px;
-        width: 95%;
+        padding: 28px 18px;
     }
 
-    .card-title {
-        font-size: 2rem;
-    }
-
-    .card-body p {
+    .wax-seal {
+        width: 56px;
+        height: 56px;
+        right: 18px;
+        top: 18px;
         font-size: 0.95rem;
-        line-height: 1.85;
     }
 
     .btn-group {
         flex-direction: column;
-        width: 85%;
     }
 
-    button {
+    .primary-btn,
+    .ghost-btn {
         width: 100%;
     }
 
-    .intro-text {
-        font-size: 2.4rem;
+    .nav-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 1.6rem;
     }
 
-    .intro-subtitle {
-        font-size: 0.95rem;
-        letter-spacing: 2px;
+    .prev-btn {
+        left: 10px;
+    }
+
+    .next-btn {
+        right: 10px;
     }
 }
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+
+    .photo-item {
+        opacity: 1;
+        transform: none;
+    }
+}
+
