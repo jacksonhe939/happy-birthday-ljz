@@ -1,6 +1,6 @@
 const TOTAL_PHOTOS = 85;
 const photoFiles = Array.from({ length: TOTAL_PHOTOS }, (_, index) => `1 (${index + 1}).jpg`);
-const featuredLabels = ["first glance", "late sunset", "little trip", "soft smile", "our day"];
+const featuredLabels = ["opening shot", "golden hour", "little trip", "soft smile", "final frame"];
 const state = {
     photos: [],
     currentSection: "intro",
@@ -125,8 +125,18 @@ function switchSection(nextId) {
 function loadPhoto(file) {
     return new Promise((resolve) => {
         const img = new Image();
-        img.onload = () => resolve(file);
-        img.onerror = () => resolve(null);
+        const timeout = window.setTimeout(() => resolve(null), 5000);
+
+        img.onload = () => {
+            window.clearTimeout(timeout);
+            resolve(file);
+        };
+
+        img.onerror = () => {
+            window.clearTimeout(timeout);
+            resolve(null);
+        };
+
         img.src = `images/${file}`;
     });
 }
@@ -186,7 +196,7 @@ function createPhotoCard(file, index) {
 
     const caption = document.createElement("span");
     caption.className = "photo-caption";
-    caption.textContent = "Open photo";
+    caption.textContent = "View frame";
 
     meta.append(order, caption);
     frame.appendChild(image);
@@ -299,7 +309,6 @@ function downloadCard() {
 
 async function init() {
     new AmbientParticleSystem();
-    await resolvePhotos();
 
     document.getElementById("startBtn").addEventListener("click", () => {
         renderGallery();
@@ -336,6 +345,11 @@ async function init() {
         if (event.key === "Escape") closeLightbox();
         if (event.key === "ArrowLeft") stepLightbox(-1);
         if (event.key === "ArrowRight") stepLightbox(1);
+    });
+
+    resolvePhotos().catch(() => {
+        const counter = document.getElementById("photoCount");
+        if (counter) counter.textContent = String(TOTAL_PHOTOS);
     });
 }
 
