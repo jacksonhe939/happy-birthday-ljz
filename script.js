@@ -1,4 +1,4 @@
-﻿const TOTAL_PHOTOS = 85;
+const TOTAL_PHOTOS = 85;
 const photoFiles = Array.from({ length: TOTAL_PHOTOS }, (_, index) => `1 (${index + 1}).jpg`);
 const featuredLabels = ["first glance", "late sunset", "little trip", "soft smile", "our day"];
 const state = {
@@ -274,7 +274,7 @@ function stepLightbox(direction) {
 function downloadCard() {
     const button = document.getElementById("saveBtn");
     const originalText = button.textContent;
-    button.textContent = "????...";
+    button.textContent = "正在保存...";
 
     html2canvas(document.getElementById("letter-content"), {
         backgroundColor: "#fff9fb",
@@ -282,15 +282,15 @@ function downloadCard() {
         useCORS: true
     }).then((canvas) => {
         const link = document.createElement("a");
-        link.download = "?LJZ????.png";
+        link.download = "给LJZ的一封信.png";
         link.href = canvas.toDataURL("image/png");
         link.click();
-        button.textContent = "???";
+        button.textContent = "保存成功";
         window.setTimeout(() => {
             button.textContent = originalText;
         }, 1600);
     }).catch(() => {
-        button.textContent = "????";
+        button.textContent = "保存失败";
         window.setTimeout(() => {
             button.textContent = originalText;
         }, 1600);
